@@ -144,7 +144,7 @@ function actualizarInterfaz(resultado) {
 
     } else if (miNave.integridad < 40) {
         // Estado de daño crítico pero funcional
-        imagenNave.src = "assets/barco.webp"; 
+        imagenNave.src = "assets/damaged.jpg"; 
         imagenNave.style.transform = "rotate(0deg)";
         imagenNave.style.filter = "drop-shadow(0 0 10px red) brightness(0.7)";
     } else {
