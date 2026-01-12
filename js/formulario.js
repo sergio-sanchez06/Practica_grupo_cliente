@@ -4,7 +4,7 @@
  */
 
 window.addEventListener("load", () => {
-  // Elementos del DOM
+  // Cargar los elementos del DOM
   const formulario = document.getElementById("form-autoevaluacion");
   const inputNombre = document.getElementById("piloto-nombre");
   const feedbackNombre = document.getElementById("feedback-nombre");
@@ -12,7 +12,7 @@ window.addEventListener("load", () => {
 
   // 1. VALIDACIÓN EN TIEMPO REAL CON REGEX (RA5)
   inputNombre.addEventListener("input", (e) => {
-    // Expresión regular: Al menos 3 letras, solo caracteres alfabéticos
+    // Expresión regular: Validar que el campo tenga al menos 3 letras y solo sean caracteres alfabéticos
     const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ]{3,}$/;
 
     if (regexNombre.test(e.target.value)) {
@@ -26,7 +26,7 @@ window.addEventListener("load", () => {
     }
   });
 
-  // 2. EVENTOS DE FOCO (RA5)
+  // 2. EVENTOS DE FOCO PARA EL CAMPO DEL NOMBRE
   inputNombre.addEventListener("focus", () => {
     inputNombre.style.backgroundColor = "rgba(77, 184, 255, 0.1)";
   });
@@ -35,7 +35,7 @@ window.addEventListener("load", () => {
     inputNombre.style.backgroundColor = "white";
   });
 
-  // 3. EVENTO DE TECLADO (RA5)
+  // 3. EVENTO DE TECLADO PARA REINICIAR EL FORMULARIO
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
       formulario.reset();
