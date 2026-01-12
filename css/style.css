@@ -106,7 +106,7 @@ h2, h3 {
     50% { transform: translateY(-10px); }
 }
 
-/* Cuadrícula de destinos 3x2 */
+/* Cuadrícula de destinos */
 #grid-destinos {
     display: grid;
     grid-template-columns: repeat(3, 1fr); 

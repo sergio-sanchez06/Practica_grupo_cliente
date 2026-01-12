@@ -18,11 +18,11 @@ window.addEventListener("load", () => {
     const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ]{3,}$/;
 
     if (regexNombre.test(e.target.value)) {
-      inputNombre.style.border = "2px solid #4db8ff"; // Azul galáctico
+      inputNombre.style.border = "2px solid #4db8ff"; 
       feedbackNombre.textContent = "✓ ID de Capitán validado.";
       feedbackNombre.style.color = "#4db8ff";
     } else {
-      inputNombre.style.border = "2px solid #ff6f61"; // Naranja/Rojo astro
+      inputNombre.style.border = "2px solid #ff6f61";
       feedbackNombre.textContent = "× El ID debe contener al menos 3 letras.";
       feedbackNombre.style.color = "#ff6f61";
     }
@@ -78,7 +78,6 @@ window.addEventListener("load", () => {
     if (q4 === 80) nota++;
     if (q5 === "SALTO") nota++;
 
-    // Lógica Nuevas Preguntas
     // P6: Correcta si selecciona cualquier fecha (validamos que no esté vacía)
     if (q6 !== "") nota++; 
     
