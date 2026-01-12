@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AstroQuiz & Explorer - Proyecto Integrador</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <header>
+        <h1>SISTEMA DE NAVEGACIÓN ESTELAR</h1>
+        <p>IES Gaspar Melchor de Jovellanos</p>
+        <nav>
+            <button class="nav-link" data-target="seccion-info">Manual de Vuelo</button>
+            <button class="nav-link" data-target="seccion-juego">Misiones</button>
+            <button class="nav-link" data-target="seccion-form">Diagnóstico de Sistemas</button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="seccion-info" class="seccion-app activa">
+            <h2>Base de Datos Galáctica</h2>
+            <div id="contenido-explicativo" class="campo"></div>
+            <article class="campo">
+                <h3>Propulsión por Curvatura</h3>
+                <p>La navegación interestelar requiere una validación precisa de los sistemas antes de cada salto.</p>
+            </article>
+        </section>
+
+        <section id="seccion-juego" class="seccion-app">
+            <h2>Simulador de Exploración</h2>
+            <div id="game-container" class="campo">
+
+                <div id="visual-nave-container">
+                    <img src="assets/rick.jpg" id="nave-visual" alt="Nave Espacial">
+                </div>
+
+                <p><strong>Estado de la Nave:</strong> <span id="nave-status">Sistemas en espera...</span></p>
+
+                <div class="controles-juego">
+                    <p>Seleccione coordenadas de salto:</p>
+                    
+                    <div id="grid-destinos">
+                        <div class="card-destino">
+                            <img src="assets/orion.webp" alt="Orión">
+                            <button class="btn-viaje" data-idx="0">Orión</button>
+                        </div>
+                        <div class="card-destino">
+                            <img src="assets/sagitario.webp" alt="Sagitario">
+                            <button class="btn-viaje" data-idx="1">Sagitario A*</button>
+                        </div>
+                        <div class="card-destino">
+                            <img src="assets/centauri.webp" alt="Proxima">
+                            <button class="btn-viaje" data-idx="2">Proxima</button>
+                        </div>
+                        <div class="card-destino">
+                            <img src="assets/barnard.jpg" alt="Barnard">
+                            <button class="btn-viaje" data-idx="3">E. Barnard</button>
+                        </div>
+                        <div class="card-destino">
+                            <img src="assets/gliese.webp" alt="Gliese">
+                            <button class="btn-viaje" data-idx="4">Gliese 581g</button>
+                        </div>
+                        <div class="card-destino">
+                            <img src="assets/kepler.webp" alt="Kepler">
+                            <button class="btn-viaje" data-idx="5">Kepler-186f</button>
+                        </div>
+                    </div>
+
+                    <button id="btn-reiniciar-juego">Reinicio de Emergencia</button>
+                </div>
+
+                <div id="log-mision">
+                    <p>📡 Esperando órdenes del capitán...</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="seccion-form" class="seccion-app">
+            <h2>Panel de Diagnóstico Pre-Vuelo</h2>
+            <form id="form-autoevaluacion">
+                <div class="campo">
+                    <label for="piloto-nombre">ID del Capitán (Mín. 3 letras):</label>
+                    <input type="text" id="piloto-nombre" name="nombre" placeholder="Nombre del oficial..." required>
+                    <span id="feedback-nombre" class="error-msg"></span>
+                </div>
+
+                <div class="campo">
+                    <p>1. ¿Cómo se comporta el sonido en el vacío del espacio?</p>
+                    <label><input type="radio" name="p1" value="incorrecta"> Viaja más rápido</label><br>
+                    <label><input type="radio" name="p1" value="correcta"> Está en completo silencio</label>
+                </div>
+
+                <div class="campo">
+                    <label for="p2-combobox">2. Giro de motores de neutrones:</label>
+                    <select id="p2-combobox" name="p2">
+                        <option value="">Seleccione diagnóstico...</option>
+                        <option value="correcta">600 veces por segundo</option>
+                        <option value="incorrecta">300 veces por segundo</option>
+                    </select>
+                </div>
+
+                <div class="campo">
+                    <p>3. Protocolos de emergencia (Elija los 2 correctos):</p>
+                    <label><input type="checkbox" name="p3" value="correcta"> Oxígeno de reserva</label><br>
+                    <label><input type="checkbox" name="p3" value="correcta"> Escudo térmico</label><br>
+                    <label><input type="checkbox" name="p3" value="incorrecta"> Expulsión de atmósfera</label>
+                </div>
+
+                <div class="botones-form">
+                    <button type="submit">Iniciar Diagnóstico</button>
+                    <button type="reset">Reiniciar Panel</button>
+                </div>
+            </form>
+            <div id="resultado-final" class="campo" style="display:none;"></div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 - IES Jovellanos </p>
+    </footer>
+
+    <script src="js/app.js"></script>
+    <script src="js/juego.js"></script>
+    <script src="js/formulario.js"></script>
+</body>
+</html>
