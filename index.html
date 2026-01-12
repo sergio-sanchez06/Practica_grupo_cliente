@@ -80,8 +80,8 @@
 
         <section id="seccion-form" class="seccion-app">
             <h2>Panel de Diagnóstico Pre-Vuelo</h2>
-            <form id="form-autoevaluacion">
-                <div class="campo">
+                <form id="form-autoevaluacion">
+                    <div class="campo">
                     <label for="piloto-nombre">ID del Capitán (Mín. 3 letras):</label>
                     <input type="text" id="piloto-nombre" name="nombre" placeholder="Nombre del oficial..." required>
                     <span id="feedback-nombre" class="error-msg"></span>
@@ -109,12 +109,34 @@
                     <label><input type="checkbox" name="p3" value="incorrecta"> Expulsión de atmósfera</label>
                 </div>
 
+                <div class="campo">
+                    <p>4. Ajuste de Escudos de Energía (Nivel óptimo 80%):</p>
+                    <input type="range" id="p4-range" name="p4" min="0" max="100" value="50">
+                    <span id="val-range">50%</span>
+                </div>
+
+                <div class="campo">
+                    <label for="p5-text">5. Código de Confirmación (Escriba "SALTO"):</label>
+                    <input type="text" id="p5-text" name="p5" placeholder="Ingrese código...">
+                </div>
+
+                <div class="campo">
+                    <label for="p6-date">6. Fecha del último mantenimiento de propulsores:</label>
+                    <input type="date" id="p6-date" name="p6">
+                </div>
+
+                <div class="campo">
+                    <label for="p7-number">7. Nivel de Oxígeno Crítico (Escriba el valor 21):</label>
+                    <input type="number" id="p7-number" name="p7" min="0" max="100" placeholder="0-100">
+                </div>
+
                 <div class="botones-form">
                     <button type="submit">Iniciar Diagnóstico</button>
                     <button type="reset">Reiniciar Panel</button>
                 </div>
-            </form>
-            <div id="resultado-final" class="campo" style="display:none;"></div>
+
+                </form>
+            <div id="resultado-final" class="campo" style="display:none; margin-top: 20px;"></div>
         </section>
     </main>
 
