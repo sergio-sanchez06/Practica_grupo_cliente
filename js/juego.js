@@ -1,14 +1,12 @@
 /**
- * LÓGICA DEL JUEGO: Space Explorer Pro v2.5 (Final Unificado)
- * Mejoras: Inventario de recursos, Daño persistente, Eventos y Muerte por deriva.
+ * LÓGICA DEL JUEGO: Space Explorer Pro v3.4 (ESTABLE)
+ * Finalizado: Causa de muerte, Sombras dinámicas y Balance.
  */
 
-// 1. Ámbito de variables: Globales
 let miNave;
 const logAcciones = [];
-let misionesExitosas = 0; 
+let misionesExitosas = 0;
 
-// 2. Datos del universo
 const destinosGalacticos = [
     ["Nebulosa de Orión", 1344, "Bajo"],
     ["Agujero Negro Sagitario A*", 26000, "Extremo"],
@@ -18,21 +16,17 @@ const destinosGalacticos = [
     ["Kepler-186f", 492, "Medio"]
 ];
 
-/**
- * 3. Función Constructora con Inventario (RA4)
- */
 function Nave(nombre, combustible, potencia) {
     this.nombre = nombre;
     this.combustible = combustible;
-    this.combustibleMax = combustible; 
+    this.combustibleMax = combustible;
     this.potencia = potencia;
     this.integridad = 100;
-    this.estaCritica = false; // Flag de persistencia visual
-    
-    // Inventario de recursos recolectados
+    this.estaCritica = false;
+
     this.inventario = {
-        chatarra: 0,   // Para reparar casco
-        celulas: 0     // Para recargar plasma
+        chatarra: 0,
+        celulas: 0
     };
 
     this.viajar = function (distancia) {
@@ -44,42 +38,27 @@ function Nave(nombre, combustible, potencia) {
         return false;
     };
 
-    // Lógica para usar recursos desde la interfaz
-    this.usarRecursos = function() {
-        if (this.inventario.chatarra > 0 || this.integridad < 100) {
-            this.integridad = Math.min(this.integridad + 20, 100);
-            this.inventario.chatarra--;
-            if (this.integridad > 40) this.estaCritica = false;
-            gestionarLog("🔧 Reparación: +20% casco usando chatarra.");
+    this.usarRecursos = function () {
+        if (this.integridad <= 0) return;
+
+        if (this.inventario.chatarra > 0) {
+            if (this.integridad < 100) {
+                this.integridad = Math.min(this.integridad + 20, 100);
+                this.inventario.chatarra--;
+                if (this.integridad > 40) this.estaCritica = false;
+                gestionarLog("🔧 REPARACIÓN: +20% casco.");
+            } else {
+                gestionarLog("🛡️ AVISO: Casco al 100%.");
+            }
         }
+
         if (this.inventario.celulas > 0) {
-            this.combustible = Math.min(this.combustible + 700, this.combustibleMax);
+            this.combustible = Math.min(this.combustible + 1500, this.combustibleMax);
             this.inventario.celulas--;
-            gestionarLog("🔋 Recarga: +700 plasma usando célula.");
+            gestionarLog("🔋 RECARGA: +1500 plasma.");
         }
-        actualizarInterfaz("Sistemas actualizados");
+        actualizarInterfaz("Sistemas de mantenimiento");
     };
-}
-
-/**
- * 4. Funciones de Lógica de Juego
- */
-function obtenerRango() {
-    if (misionesExitosas >= 10) return "Almirante Galáctico";
-    if (misionesExitosas >= 5) return "Comandante";
-    if (misionesExitosas >= 2) return "Explorador Veterano";
-    return "Cadete Espacial";
-}
-
-function dispararEventoAleatorio() {
-    const azar = Math.random() * 100;
-    if (azar > 85) {
-        miNave.combustible = Math.min(miNave.combustible + 400, miNave.combustibleMax);
-        gestionarLog("✨ EVENTO: ¡Nube de hidrógeno detectada! +400 plasma.");
-    } else if (azar < 15) {
-        miNave.integridad -= 10;
-        gestionarLog("☄️ EVENTO: Lluvia de meteoritos. -10% integridad.");
-    }
 }
 
 function iniciarMision(indiceDestino) {
@@ -92,58 +71,47 @@ function iniciarMision(indiceDestino) {
     let dañoTotalPotencial = 15 + Math.floor(distancia / 1000) * 5 + (riesgoBase === "Extremo" ? 35 : riesgoBase === "Alto" ? 20 : 10);
 
     if (miNave.viajar(distancia)) {
+        gestionarLog(`🚀 SALTO: Viajando a ${destino}...`);
         dispararEventoAleatorio();
-
-        // Check de estado crítico persistente
-        if (miNave.integridad <= 40 && miNave.integridad > 0) miNave.estaCritica = true;
 
         if (miNave.integridad <= 0) {
             miNave.integridad = 0;
+            gestionarLog("💀 CAUSA: Colisión catastrófica en ruta.");
             mostrarBotonReinicio();
-            return "🚨 DESASTRE: La nave se ha desintegrado.";
+            return "GAME OVER";
         }
 
-        const penalizador = Math.min(distancia / 5000, 20);
-        if (Math.random() * 100 > (25 + penalizador)) {
+        if (Math.random() * 100 > 30) {
             misionesExitosas++;
+            gestionarLog(`✅ LLEGADA: Aterrizaje seguro en ${destino}.`);
             
-            // --- NUEVO: RECOLECCIÓN AL LLEGAR AL PLANETA ---
-            const suerte = Math.random();
-            if (suerte > 0.6) {
-                miNave.inventario.chatarra++;
-                gestionarLog(`💎 RECURSOS: ¡Chatarra encontrada en ${destino}!`);
-            } else if (suerte > 0.2) {
-                miNave.inventario.celulas++;
-                gestionarLog(`🔋 RECURSOS: ¡Célula de energía recogida en ${destino}!`);
-            }
-
-            return `¡Éxito en ${destino}! Rango: ${obtenerRango()}`;
+            const suerte = Math.random() * 100;
+            if (suerte > 70) { miNave.inventario.chatarra++; gestionarLog(`💎 RECURSOS: Chatarra en ${destino}.`); }
+            else if (suerte > 40) { miNave.inventario.celulas++; gestionarLog(`🔋 RECURSOS: Célula en ${destino}.`); }
+            
+            return `¡Éxito en ${destino}!`;
         } else {
             miNave.integridad -= dañoTotalPotencial;
-            if (miNave.integridad <= 40 && miNave.integridad > 0) miNave.estaCritica = true;
+            gestionarLog(`💥 IMPACTO: Daños en ${destino}. -${dañoTotalPotencial}% integridad.`);
+
             if (miNave.integridad <= 0) {
                 miNave.integridad = 0;
+                gestionarLog(`💀 CAUSA: Impacto fatal en ${destino}.`);
                 mostrarBotonReinicio();
-                return "🚨 Nave destruida en " + destino;
+                return "GAME OVER";
             }
-            return "¡Fallo en la misión! Daño estructural.";
+            
+            if (miNave.integridad <= 40) miNave.estaCritica = true;
+            return `¡Daños estructurales!`;
         }
     } else {
-        // Lógica de muerte por combustible (Deriva)
-        const distancias = destinosGalacticos.map(d => d[1]);
-        const gastoMinimo = Math.min(...distancias) * (100 / miNave.potencia);
-        if (miNave.combustible < gastoMinimo) {
-            miNave.integridad = 0;
-            mostrarBotonReinicio();
-            return "💀 DERIVA: Sin combustible para saltar. La tripulación se ha perdido.";
-        }
-        return "Combustible insuficiente.";
+        miNave.integridad = 0;
+        gestionarLog("💀 CAUSA: Nave a la deriva por falta de plasma.");
+        mostrarBotonReinicio();
+        return "GAME OVER";
     }
 }
 
-/**
- * 5. Gestión de Interfaz (RA5)
- */
 function actualizarInterfaz(resultado) {
     const statusNave = document.getElementById('nave-status');
     const imagenNave = document.getElementById('nave-visual');
@@ -154,40 +122,59 @@ function actualizarInterfaz(resultado) {
     if (barraVida) barraVida.style.width = miNave.integridad + "%";
     if (barraEnergia) barraEnergia.style.width = (miNave.combustible / miNave.combustibleMax) * 100 + "%";
 
-    // Visual de la nave (Persistente)
-    if (miNave.integridad <= 0) {
-        imagenNave.src = "assets/estrellado.jpg";
+    const juegoTerminado = miNave.integridad <= 0;
+
+    if (juegoTerminado) {
+        const imagenRandom = Math.random() * 100;
+        imagenNave.src = imagenRandom > 50 ? "assets/estrellado.jpg" : "assets/estrellado1.jpg";
         imagenNave.style.transform = "rotate(25deg)";
-        imagenNave.style.filter = "grayscale(1)";
+        imagenNave.style.filter = "grayscale(1) sepia(0.5)";
         document.querySelectorAll('.btn-viaje').forEach(b => b.disabled = true);
     } else if (miNave.estaCritica) {
         imagenNave.src = "assets/damaged.jpg";
-        imagenNave.style.filter = "drop-shadow(0 0 10px red)";
+        imagenNave.style.filter = "drop-shadow(0 0 15px #ff4d4d)";
+        imagenNave.style.transform = "rotate(0deg)";
     } else {
         imagenNave.src = "assets/rick.jpg";
         imagenNave.style.filter = "drop-shadow(0 0 15px #4db8ff)";
         imagenNave.style.transform = "rotate(0deg)";
     }
 
-    // Renderizado Log e Inventario
-    let historialHTML = logAcciones.map(log => `<li>${log}</li>`).join("");
+    let historialHTML = logAcciones.slice().reverse().map(log => {
+        const estilo = log.includes("CAUSA") ? 'style="color: #ff4d4d; font-weight: bold;"' : '';
+        return `<li ${estilo}>${log}</li>`;
+    }).join("");
+
     logMision.innerHTML = `
-        <p><strong>📡 ${resultado}</strong></p>
-        <div style="border: 1px solid #4db8ff; padding: 8px; margin: 10px 0; background: rgba(0,0,0,0.5);">
+        <p style="color:#4db8ff; margin-bottom:5px;"><strong>📡 ESTADO: ${resultado}</strong></p>
+        <div style="border: 1px solid #4db8ff; padding: 10px; margin-bottom: 10px; background: rgba(0,0,0,0.6); border-radius: 5px;">
             <p style="margin:0; font-size: 0.8em; color: #4db8ff;">📦 INVENTARIO:</p>
-            <p style="margin:5px 0; font-size: 0.85em;">🛠️ Chatarra: ${miNave.inventario.chatarra} | 🔋 Células: ${miNave.inventario.celulas}</p>
-            <button onclick="miNave.usarRecursos()" style="cursor:pointer; background:#4db8ff; border:none; border-radius:3px; padding:2px 5px; font-size:0.7em;">USAR RECURSOS</button>
+            <p style="margin:5px 0; font-size: 0.9em;">🛠️ Chatarra: ${miNave.inventario.chatarra} | 🔋 Células: ${miNave.inventario.celulas}</p>
+            <button id="btn-recursos" onclick="miNave.usarRecursos()" ${juegoTerminado ? 'disabled' : ''} 
+                    style="cursor:${juegoTerminado ? 'not-allowed' : 'pointer'}; background:${juegoTerminado ? '#555' : '#4db8ff'}; border:none; border-radius:3px; padding:5px 10px; font-weight:bold; color:black;">
+                ${juegoTerminado ? 'SISTEMAS OFFLINE' : 'USAR SUMINISTROS'}
+            </button>
         </div>
-        <ul style="list-style:none; padding:0; font-size:0.8em; color:#bbb;">${historialHTML}</ul>
+        <ul style="list-style:none; padding:0; font-size:0.85em; color:#ddd; line-height:1.6;">${historialHTML}</ul>
     `;
 
-    statusNave.textContent = `Plasma: ${Math.max(0, miNave.combustible)} | Casco: ${miNave.integridad}% | ${obtenerRango()}`;
+    statusNave.textContent = `Plasma: ${Math.max(0, Math.floor(miNave.combustible))} | Casco: ${miNave.integridad}%`;
 }
 
-// Auxiliares
 function gestionarLog(mensaje) {
     logAcciones.push(mensaje);
     if (logAcciones.length > 5) logAcciones.shift();
+}
+
+function dispararEventoAleatorio() {
+    const azar = Math.random() * 100;
+    if (azar > 85) {
+        miNave.combustible = Math.min(miNave.combustible + 400, miNave.combustibleMax);
+        gestionarLog("✨ EVENTO: Nube de plasma hallada. +400.");
+    } else if (azar < 15) {
+        miNave.integridad -= 10;
+        gestionarLog("☄️ EVENTO: Meteoritos detectados. -10% integridad.");
+    }
 }
 
 function mostrarBotonReinicio() {
@@ -196,13 +183,14 @@ function mostrarBotonReinicio() {
 }
 
 function inicializarJuego() {
-    miNave = new Nave("Explorador JS", 5000, 80);
+    miNave = new Nave("Explorador JS", 8000, 100); 
     misionesExitosas = 0;
     logAcciones.length = 0;
-    logAcciones.push("Sistemas listos. Esperando órdenes.");
-    document.getElementById('btn-reiniciar-juego').style.display = "none";
+    gestionarLog("Sistemas online. Iniciando misión.");
+    const btnReiniciar = document.getElementById('btn-reiniciar-juego');
+    if(btnReiniciar) btnReiniciar.style.display = "none";
     document.querySelectorAll('.btn-viaje').forEach(b => b.disabled = false);
-    actualizarInterfaz("Inicio de Misión");
+    actualizarInterfaz("Sistemas Listos");
 }
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -218,5 +206,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }, 600);
         });
     });
-    document.getElementById('btn-reiniciar-juego').addEventListener('click', inicializarJuego);
+    const btnReiniciar = document.getElementById('btn-reiniciar-juego');
+    if(btnReiniciar) btnReiniciar.addEventListener('click', inicializarJuego);
 });
