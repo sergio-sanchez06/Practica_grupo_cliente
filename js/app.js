@@ -3,15 +3,15 @@
  * Propósito: Orquestar la carga de la aplicación y gestionar la navegación.
  */
 
-// 1. Objeto Literal (Requisito RA4)
+// 1. Objeto Literal
 const configApp = {
     nombreProyecto: "AstroQuiz & Explorer",
     version: "1.0",
     autor: "Equipo de Desarrollo JS",
-    fechaEntrega: "14/01/2026" // Fecha límite según documento [cite: 99]
+    fechaEntrega: "15/01/2026"
 };
 
-// 2. Evento de Carga (Requisito RA5 - Evento load)
+// 2. Evento de Carga
 window.addEventListener('load', () => {
     console.log(`Cargando: ${configApp.nombreProyecto} v${configApp.version}`);
     inicializarNavegacion();
@@ -19,7 +19,7 @@ window.addEventListener('load', () => {
 });
 
 /**
- * Gestión de la navegación entre secciones (Juego, Explicación, Formulario)
+ * Gestión de la navegación entre secciones
  */
 function inicializarNavegacion() {
     const botonesNav = document.querySelectorAll('.nav-link');
@@ -47,7 +47,6 @@ function inicializarNavegacion() {
  * Sección de contenido explicativo relacionada con la temática (Requisito RA4)
  * Genera el contenido de forma dinámica para demostrar uso de JS. 
  */
-// ... (Tu código anterior de configApp y navegación) ...
 
 function generarContenidoExplicativo() {
     const contenedor = document.getElementById('contenido-explicativo');
@@ -68,11 +67,11 @@ function generarContenidoExplicativo() {
 
 function formatearTexto(texto) {
     if (typeof texto !== 'string') return "";
-    // Uso de trim() y toUpperCase() (Funciones predefinidas RA4)
+    // Uso de trim() y toUpperCase()
     return texto.trim(); 
 }
 
-// Función con parámetros y retorno para utilidades generales (Requisito RA4) [cite: 40]
+// Función con parámetros y retorno para utilidades generales
 function formatearTexto(texto) {
     if (typeof texto !== 'string') return "";
     return texto.trim().toUpperCase();
