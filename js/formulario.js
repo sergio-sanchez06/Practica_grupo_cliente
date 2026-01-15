@@ -36,7 +36,8 @@ window.addEventListener("load", () => {
 
   // 3. EVENTOS DE FOCO (RA5)
   inputNombre.addEventListener("focus", () => {
-    inputNombre.style.backgroundColor = "rgba(77, 184, 255, 0.1)";
+    inputNombre.style.backgroundColor = "rgb(196, 196, 196)";
+    // inputNombre.style.color = "white";
   });
 
   inputNombre.addEventListener("blur", () => {

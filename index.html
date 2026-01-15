@@ -6,6 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AstroQuiz & Explorer - Proyecto Integrador</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- jQuery UI -->
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 </head>
 
 <body>
@@ -41,7 +46,7 @@
 
                 <div class="controles-juego">
                     <p>Seleccione coordenadas de salto:</p>
-                    
+
                     <div id="grid-destinos">
                         <div class="card-destino">
                             <img src="assets/orion.webp" alt="Orión">
@@ -80,8 +85,8 @@
 
         <section id="seccion-form" class="seccion-app">
             <h2>Panel de Diagnóstico Pre-Vuelo</h2>
-                <form id="form-autoevaluacion">
-                    <div class="campo">
+            <form id="form-autoevaluacion">
+                <div class="campo">
                     <label for="piloto-nombre">ID del Capitán (Mín. 3 letras):</label>
                     <input type="text" id="piloto-nombre" name="nombre" placeholder="Nombre del oficial..." required>
                     <span id="feedback-nombre" class="error-msg"></span>
@@ -122,7 +127,7 @@
 
                 <div class="campo">
                     <label for="p6-date">6. Fecha del último mantenimiento de propulsores:</label>
-                    <input type="date" id="p6-date" name="p6">
+                    <input type="text" id="p6-date" name="p6" placeholder="01/01/2026">
                 </div>
 
                 <div class="campo">
@@ -135,7 +140,7 @@
                     <button type="reset">Reiniciar Panel</button>
                 </div>
 
-                </form>
+            </form>
             <div id="resultado-final" class="campo" style="display:none; margin-top: 20px;"></div>
         </section>
     </main>
@@ -147,5 +152,23 @@
     <script src="js/app.js"></script>
     <script src="js/juego.js"></script>
     <script src="js/formulario.js"></script>
+
+    <script>
+
+        $(function () {
+
+            $("#p6-date").datepicker({
+
+                maxDate: 0,
+                dateFormat: "dd/mm/yy"
+
+            })
+
+
+        })
+
+
+    </script>
 </body>
+
 </html>
