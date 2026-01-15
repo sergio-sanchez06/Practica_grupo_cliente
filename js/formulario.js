@@ -65,7 +65,7 @@ window.addEventListener("load", () => {
     const q3 = document.querySelectorAll('input[name="p3"]:checked');
     const q4 = parseInt(document.getElementById("p4-range").value);
     const q5 = document.getElementById("p5-text").value.trim().toUpperCase();
-    const q6 = document.getElementById("p6-date").value; // Tipo Date
+    const q6 = document.getElementById("p6-date").value; // Tipo input con widget datepicker
     const q7 = document.getElementById("p7-number").value; // Tipo Number
 
     // Lógica de corrección (P1 a P5 igual)
@@ -87,7 +87,7 @@ window.addEventListener("load", () => {
 
     // Cálculo de porcentaje y feedback
     const porcentaje = Math.round((nota / totalPreguntas) * 100);
-    const aprobado = nota >= 4; // Se aprueba con 4 de 7
+    const aprobado = nota >= 4;
 
     feedbackGlobal.style.display = "block";
     feedbackGlobal.style.border = `2px solid ${aprobado ? "#4db8ff" : "#ff6f61"}`;
