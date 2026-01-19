@@ -18,7 +18,7 @@ window.addEventListener("load", () => {
     const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ]{3,}$/;
 
     if (regexNombre.test(e.target.value)) {
-      inputNombre.style.border = "2px solid #4db8ff"; 
+      inputNombre.style.border = "2px solid #4db8ff";
       feedbackNombre.textContent = "✓ ID de Capitán validado.";
       feedbackNombre.style.color = "#4db8ff";
     } else {
@@ -54,7 +54,7 @@ window.addEventListener("load", () => {
 
   // 5. GESTIÓN DEL ENVÍO (SUBMIT) Y CÁLCULO DE NOTA (RA5)
   formulario.addEventListener("submit", (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
 
     let nota = 0;
     const totalPreguntas = 7; // Ahora son 7 preguntas
@@ -71,17 +71,17 @@ window.addEventListener("load", () => {
     // Lógica de corrección (P1 a P5 igual)
     if (q1 === "correcta") nota++;
     if (q2 === "correcta") nota++;
-    
+
     let q3Correctas = 0;
-    q3.forEach(c => { if(c.value === "correcta") q3Correctas++; });
+    q3.forEach(c => { if (c.value === "correcta") q3Correctas++; });
     if (q3Correctas === 2 && q3.length === 2) nota++;
 
     if (q4 === 80) nota++;
     if (q5 === "SALTO") nota++;
 
     // P6: Correcta si selecciona cualquier fecha (validamos que no esté vacía)
-    if (q6 !== "") nota++; 
-    
+    if (q6 !== "") nota++;
+
     // P7: Correcta si el número es exactamente 21
     if (parseInt(q7) === 21) nota++;
 
@@ -96,9 +96,9 @@ window.addEventListener("load", () => {
             <p>Estado de los Sistemas: <strong>${porcentaje}% Operativo</strong></p>
             <p>Aciertos: ${nota} de ${totalPreguntas}</p>
             <p style="color: ${aprobado ? '#4db8ff' : '#ff6f61'}">
-                ${aprobado 
-                    ? "✓ TODOS LOS SISTEMAS NOMINALES. Autorizado para el salto espacial." 
-                    : "× ERROR EN LOS PROTOCOLOS. Revise el manual de vuelo inmediatamente."}
+                ${aprobado
+        ? "✓ TODOS LOS SISTEMAS NOMINALES. Autorizado para el salto espacial."
+        : "× ERROR EN LOS PROTOCOLOS. Revise el manual de vuelo inmediatamente."}
             </p>
         `;
 
@@ -113,4 +113,51 @@ window.addEventListener("load", () => {
     rangeValue.textContent = "50%"; // Reset del texto del slider
     console.log("Panel de control limpio.");
   });
+
+  let $form = document.getElementById("form-autoevaluacion")
+
+  let new_div = document.createElement("div")
+
+  // let new_div = $form.getElementsByTagName("div")[document.getElementsByTagName("div").length - 1]
+
+  new_div.setAttribute("class", "campo")
+
+  let new_label = document.createElement("label")
+  let text_label = document.createTextNode("8. Cuantos motores tiene la nave")
+
+  new_label.appendChild(text_label)
+
+  console.log(new_label)
+
+  let select_tag = document.createElement("select")
+
+  var opciones = [1, 2, 3, 4, 5]
+
+  $form.appendChild(select_tag)
+
+  for (let i = 0; i < opciones.length; i++) {
+
+    let option = document.createElement("option")
+
+    option.setAttribute("value", opciones[i])
+
+    let name_option = document.createTextNode(opciones[i])
+
+    option.appendChild(name_option)
+
+    select_tag.appendChild(option)
+
+  }
+  
+  new_div.appendChild(new_label)
+  new_div.appendChild(select_tag)
+  
+  console.log(new_div)
+  
+  let ultimo_div = $form.querySelector("div:last-of-type")
+  
+  console.log(ultimo_div)
+  
+  $form.insertBefore(new_div, ultimo_div)
+
 });
