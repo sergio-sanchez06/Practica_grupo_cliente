@@ -193,19 +193,41 @@ function inicializarJuego() {
     actualizarInterfaz("Sistemas Listos");
 }
 
+/**
+ * GESTIÓN DE EVENTOS (BLOQUE B)
+ */
 document.addEventListener("DOMContentLoaded", () => {
     inicializarJuego();
+
+    // Eventos para los botones de viaje
     document.querySelectorAll('.btn-viaje').forEach(boton => {
+        // Evento de clic principal
         boton.addEventListener('click', (e) => {
+            // BLOQUE B: Control de propagación
+            e.stopPropagation();
+            console.log("Propagación detenida en el botón de misión.");
+
             const idx = parseInt(e.target.dataset.idx);
             e.target.disabled = true;
+            
             setTimeout(() => {
                 const res = iniciarMision(idx);
                 actualizarInterfaz(res);
                 if (miNave.integridad > 0) e.target.disabled = false;
             }, 600);
         });
+
+        // BLOQUE B: Eventos de Ratón (Mouseover / Mouseout)
+        boton.addEventListener('mouseover', (e) => {
+            e.target.style.filter = "brightness(1.5)";
+            e.target.style.transition = "0.3s";
+        });
+
+        boton.addEventListener('mouseout', (e) => {
+            e.target.style.filter = "brightness(1)";
+        });
     });
+
     const btnReiniciar = document.getElementById('btn-reiniciar-juego');
     if(btnReiniciar) btnReiniciar.addEventListener('click', inicializarJuego);
 });

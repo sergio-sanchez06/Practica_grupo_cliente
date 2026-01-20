@@ -11,11 +11,27 @@ const configApp = {
     fechaEntrega: "15/01/2026"
 };
 
-// 2. Evento de Carga
+// --- NUEVO: BLOQUE C (Compatibilidad) ---
+function registrarEvento(elemento, evento, manejador) {
+    if (elemento.addEventListener) {
+        elemento.addEventListener(evento, manejador, false);
+    } else if (elemento.attachEvent) {
+        elemento.attachEvent("on" + evento, manejador);
+    } else {
+        elemento["on" + evento] = manejador;
+    }
+}
+
+// 2. Evento de Carga Original
 window.addEventListener('load', () => {
     console.log(`Cargando: ${configApp.nombreProyecto} v${configApp.version}`);
     inicializarNavegacion();
     generarContenidoExplicativo();
+});
+
+// --- NUEVO: BLOQUE B/C (Uso de la función compatible) ---
+registrarEvento(window, 'load', () => {
+    console.log("Sistemas de navegación estelar inicializados con compatibilidad.");
 });
 
 /**
@@ -27,7 +43,7 @@ function inicializarNavegacion() {
 
     botonesNav.forEach(boton => {
         boton.addEventListener('click', (e) => {
-            // Usamos currentTarget para asegurar que siempre leemos el data-target del botón
+            // BLOQUE B: Uso de currentTarget
             const target = e.currentTarget.dataset.target;
 
             if (!target) return; // Seguridad
@@ -45,9 +61,7 @@ function inicializarNavegacion() {
 
 /**
  * Sección de contenido explicativo relacionada con la temática (Requisito RA4)
- * Genera el contenido de forma dinámica para demostrar uso de JS. 
  */
-
 function generarContenidoExplicativo() {
     const contenedor = document.getElementById('contenido-explicativo');
     const conceptosEspaciales = [
@@ -57,7 +71,6 @@ function generarContenidoExplicativo() {
     ];
 
     let html = "<h3>📚 Sabías que...</h3><ul>";
-    // Recorrido de arrays (RA4)
     conceptosEspaciales.forEach(concepto => {
         html += `<li>${formatearTexto(concepto)}</li>`;
     });
@@ -67,11 +80,9 @@ function generarContenidoExplicativo() {
 
 function formatearTexto(texto) {
     if (typeof texto !== 'string') return "";
-    // Uso de trim() y toUpperCase()
     return texto.trim(); 
 }
 
-// Función con parámetros y retorno para utilidades generales
 function formatearTexto(texto) {
     if (typeof texto !== 'string') return "";
     return texto.trim().toUpperCase();
