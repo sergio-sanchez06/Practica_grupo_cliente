@@ -126,26 +126,18 @@ function actualizarInterfaz(resultado) {
   const statusNave = document.getElementById("nave-status");
   const textoInformacion = `Plasma: ${Math.max(0, Math.floor(miNave.combustible))} | Casco: ${miNave.integridad}%`;
 
-  // Modificar contenido textual accediendo a nodos de tipo texto (nodeValue)
+  // Uso de nodeValue para modificar el texto (DOM Puro) 
   if (statusNave.firstChild) {
     statusNave.firstChild.nodeValue = textoInformacion;
   } else {
     statusNave.appendChild(document.createTextNode(textoInformacion));
   }
 
-  // Modificación de atributos de las barras de estado [cite: 50]
+  // Modificación de atributos mediante setAttribute [cite: 163]
   const barraVida = document.getElementById("relleno-integridad");
-  const barraEnergia = document.getElementById("relleno-combustible");
-
   if (barraVida) {
-    barraVida.setAttribute("style", "width: " + miNave.integridad + "%;");
+    barraVida.setAttribute("style", `width: ${miNave.integridad}%; background-color: ${miNave.integridad < 30 ? 'red' : '#4db8ff'}`);
   }
-  if (barraEnergia) {
-    let porcentaje = (miNave.combustible / miNave.combustibleMax) * 100;
-    barraEnergia.setAttribute("style", "width: " + porcentaje + "%;");
-  }
-
-  actualizarEstadoVisualNave();
 }
 
 // function actualizarInterfaz(resultado) {
@@ -198,37 +190,30 @@ function actualizarInterfaz(resultado) {
 // }
 
 function gestionarLog(mensaje) {
-  // 1. Acceso al nodo mediante getElementById
   const logMision = document.getElementById("log-mision");
 
-  // 2. Creación dinámica de elementos y nodos de texto
+  // Creación dinámica 
   const nuevoLog = document.createElement("li");
-  const textoMensaje = document.createTextNode(mensaje);
-  nuevoLog.appendChild(textoMensaje);
+  const texto = document.createTextNode(mensaje);
+  nuevoLog.appendChild(texto);
 
-  // 3. Modificación de atributos mediante setAttribute [cite: 50]
-  if (mensaje.includes("💀")) {
-    nuevoLog.setAttribute(
-      "style",
-      "color: #ff4d4d; font-weight: bold; border-left: 3px solid red; padding-left: 5px;",
-    );
-  } else if (mensaje.includes("✅")) {
-    nuevoLog.setAttribute("style", "color: #2ecc71;");
+  // Uso de setAttribute para estilos dinámicos [cite: 163]
+  if (mensaje.includes("💀") || mensaje.includes("💥")) {
+    nuevoLog.setAttribute("class", "log-critico");
+    nuevoLog.setAttribute("style", "color: #ff6f61; border-left: 3px solid red; padding-left: 5px;");
   }
 
-  // 4. Inserción dinámica usando insertBefore (para que el más reciente aparezca arriba) [cite: 45]
   if (logMision.firstChild) {
     logMision.insertBefore(nuevoLog, logMision.firstChild);
   } else {
     logMision.appendChild(nuevoLog);
   }
 
-  // 5. Eliminación dinámica de nodos (Límite de 5 mensajes en pantalla)
-  if (logMision.childNodes.length > 5) {
+  // Eliminación dinámica con removeChild 
+  if (logMision.childNodes.length > 6) {
     logMision.removeChild(logMision.lastChild);
   }
 }
-
 function dispararEventoAleatorio() {
   const azar = Math.random() * 100;
   if (azar > 85) {
@@ -259,31 +244,17 @@ function actualizarInventarioVisual() {
 }
 
 function mostrarBotonReinicio() {
-  // Crear un contenedor de mensaje final dinámicamente [cite: 42]
-  const avisoFin = document.createElement("div");
-  avisoFin.setAttribute("id", "mensaje-final-ia"); // [cite: 50]
-
-  const h2 = document.createElement("h2");
-  h2.appendChild(document.createTextNode("MISION TERMINADA")); // [cite: 44]
-
-  const p = document.createElement("p");
-  p.appendChild(
-    document.createTextNode(
-      "La nave ha sido destruida o ha quedado a la deriva.",
-    ),
-  );
-
-  avisoFin.appendChild(h2);
-  avisoFin.appendChild(p);
-
-  // Insertarlo en el DOM [cite: 45]
-  document.body.appendChild(avisoFin);
-
   const btn = document.getElementById("btn-reiniciar-juego");
   if (btn) {
-    btn.removeAttribute("style"); // Quita el display:none inicial [cite: 52]
-    btn.setAttribute("style", "display: block; margin: 20px auto;");
+    btn.removeAttribute("style"); // Elimina el display:none [cite: 165]
+    btn.setAttribute("class", "btn-alerta-animada");
   }
+  
+  // Uso de getElementsByTagName para añadir mensaje al footer 
+  const piePagina = document.getElementsByTagName("footer")[0];
+  const aviso = document.createElement("p");
+  aviso.appendChild(document.createTextNode("⚠️ TRANSMISIÓN FINALIZADA - NAVE PERDIDA"));
+  piePagina.appendChild(aviso);
 }
 
 function inicializarJuego() {
