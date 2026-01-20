@@ -14,7 +14,7 @@ window.addEventListener("load", () => {
   inputNombre.addEventListener("input", (e) => {
     const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ]{3,}$/;
     if (regexNombre.test(e.target.value)) {
-      inputNombre.style.border = "2px solid #4db8ff"; 
+      inputNombre.style.border = "2px solid #4db8ff";
       feedbackNombre.textContent = "✓ ID de Capitán validado.";
       feedbackNombre.style.color = "#4db8ff";
     } else {
@@ -59,7 +59,7 @@ window.addEventListener("load", () => {
 
   // 5. GESTIÓN DEL ENVÍO ORIGINAL
   formulario.addEventListener("submit", (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
 
     let nota = 0;
     const totalPreguntas = 7;
@@ -75,7 +75,7 @@ window.addEventListener("load", () => {
     if (q1 === "correcta") nota++;
     if (q2 === "correcta") nota++;
     let q3Correctas = 0;
-    q3.forEach(c => { if(c.value === "correcta") q3Correctas++; });
+    q3.forEach(c => { if (c.value === "correcta") q3Correctas++; });
     if (q3Correctas === 2 && q3.length === 2) nota++;
     if (q4 === 80) nota++;
     if (q5 === "SALTO") nota++;
