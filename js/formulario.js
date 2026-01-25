@@ -1,128 +1,149 @@
 /**
- * LÓGICA DEL FORMULARIO: Diagnóstico de Sistemas (Ampliación RA6)
- * Incluye: Manipulación de DOM, Gestión de Eventos y Objeto Event
+ * LÓGICA DEL FORMULARIO: Diagnóstico de Sistemas (RA5 + Ampliación Unidad 06)
+ * 
  */
 
 window.addEventListener("load", () => {
   const formulario = document.getElementById("form-autoevaluacion");
-  const feedbackGlobal = document.getElementById("resultado-final");
   const inputNombre = document.getElementById("piloto-nombre");
-  const inputCodigo = document.getElementById("p5-text");
+  const feedbackNombre = document.getElementById("feedback-nombre");
+  const feedbackGlobal = document.getElementById("resultado-final");
+  const rangeInput = document.getElementById("p4-range");
+  const rangeValue = document.getElementById("val-range");
 
-  // --- BLOQUE A & B: VALIDACIÓN DE NOMBRE CON FEEDBACK DINÁMICO ---
+  // 1. VALIDACIÓN EN TIEMPO REAL CON REGEX (nombre del capitán)
   inputNombre.addEventListener("input", (e) => {
-    const feedbackNombre = document.getElementById("feedback-nombre");
-    const esValido = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ\s]{3,}$/.test(e.target.value);
+    const regexNombre = /^[a-zA-ZÁÉÍÓÚáéíóúñÑ]{3,}$/;
+    if (regexNombre.test(e.target.value)) {
+    // Estado válido
+    inputNombre.setAttribute("style", "border: 2px solid #4db8ff;");          
+    feedbackNombre.textContent = "✓ ID de Capitán validado.";
+    feedbackNombre.setAttribute("style", "color: #4db8ff;");                 
+  } else {
+    // Estado inválido
+    inputNombre.setAttribute("style", "border: 2px solid #ff6f61;");          
+    feedbackNombre.textContent = "× El ID debe contener al menos 3 letras.";
+    feedbackNombre.setAttribute("style", "color: #ff6f61;");                 
+  }
+  });
 
-    if (esValido) {
-      inputNombre.setAttribute("style", "border: 2px solid #4db8ff;");
-      // Modificación de nodo de texto (Bloque A)
-      feedbackNombre.firstChild.nodeValue = "✓ ID de Capitán validado.";
-    } else {
-      inputNombre.setAttribute("style", "border: 2px solid #ff6f61;");
-      feedbackNombre.firstChild.nodeValue =
-        "× El ID debe contener al menos 3 letras.";
+  // 2. ACTUALIZACIÓN DINÁMICA DEL RANGO
+  rangeInput.addEventListener("input", (e) => {
+    rangeValue.textContent = `${e.target.value}%`;
+  });
+
+  // 3. EVENTOS DE FOCO en el campo nombre
+  inputNombre.addEventListener("focus", () => {
+    inputNombre.style.backgroundColor = "rgb(196, 196, 196)";
+  });
+
+  inputNombre.addEventListener("blur", () => {
+    inputNombre.style.backgroundColor = "white";
+  });
+
+  // 4. Atajo Escape → reset del formulario
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      formulario.reset();
+      console.log("Panel de diagnóstico reiniciado por comando de emergencia (ESC).");
     }
   });
 
-  // ================================================================
-  // BLOQUE B (EVENTOS DE TECLADO Y OBJETO EVENT)
-  // ================================================================
-
-  // 1. Evento de teclado 'keydown' + preventDefault para restringir entrada
-  inputNombre.addEventListener("keydown", (e) => {
-    // Bloquear números (códigos 48-57 en teclado estándar y 96-105 en numérico)
-    if (
-      (e.keyCode >= 48 && e.keyCode <= 57) ||
-      (e.keyCode >= 96 && e.keyCode <= 105)
-    ) {
-      e.preventDefault(); // RA5: Control de flujo
-      console.warn(
-        "Caracter no permitido: Los números están bloqueados en el nombre.",
-      );
-    }
-  });
-
-  // 2. Evento de teclado 'keyup' + detección de tecla especial (Enter y Shift)
-  inputCodigo.addEventListener("keyup", (e) => {
-    // RA5: Uso de propiedad 'key' del objeto Event para detectar "Enter"
-    if (e.key === "Enter") {
-      const valor = e.target.value.toUpperCase(); // Propiedad target
-      if (valor === "SALTO") {
-        e.target.style.backgroundColor = "#1a4d1a"; // Estilo dinámico
-        console.log(
-          "Sistemas activados: Código de confirmación aceptado vía teclado.",
-        );
-      } else {
-        e.target.style.backgroundColor = "#4d1a1a";
+  // Atajo Ctrl + Enter → envío directo del formulario
+  document.addEventListener("keydown", (e) => {
+    if (e.ctrlKey && e.key === "Enter") {
+      if (formulario) {
+        console.log("Acceso directo detectado: Enviando diagnóstico...");
+        formulario.requestSubmit();
       }
     }
-
-    // RA5: Detección de tecla especial modificadora (Shift)
-    if (e.shiftKey) {
-      console.log("Detección de objeto Event: Tecla Shift presionada.");
-    }
   });
 
-  // --- BLOQUE B: PROCESAMIENTO DEL FORMULARIO (SUBMIT) ---
-  formulario.addEventListener("submit", (e) => {
-    e.preventDefault(); // Evitar recarga de página
+  // 5. ENVÍO DEL FORMULARIO – con validación y puntuación
+  formulario.addEventListener("submit", (event) => {
+    event.preventDefault();
 
     let nota = 0;
     const totalPreguntas = 7;
 
-    // --- BLOQUE A: Acceso por getElementsByName ---
-    const opcionesP1 = document.getElementsByName("p1");
-    opcionesP1.forEach((opcion) => {
-      if (opcion.checked && opcion.value === "correcta") nota++;
-    });
+    // ────────────────────────────────────────────────
+    // BLOQUE A: Uso de getElementsByName para radio buttons
+    // ────────────────────────────────────────────────
+    const radiosP1 = document.getElementsByName("p1");
+    let q1 = null;
+    for (let radio of radiosP1) {
+      if (radio.checked) {
+        q1 = radio.value;
+        break;
+      }
+    }
 
-    const opcionesP2 = document.getElementsByName("p2");
-    opcionesP2.forEach((opcion) => {
-      if (opcion.checked && opcion.value === "correcta") nota++;
-    });
+    // Pregunta 2 (select)
+    const q2 = document.getElementById("p2-combobox").value;
 
-    // Validaciones simples para el resto de campos
-    if (document.getElementById("p3-select").value === "correcta") nota++;
-    if (document.getElementById("p4-check").checked) nota++;
-    if (inputCodigo.value.toUpperCase() === "SALTO") nota++;
-    if (document.getElementById("p6-date").value !== "") nota++;
-    if (document.getElementById("p7-number").value == "21") nota++;
+    // ────────────────────────────────────────────────
+    // BLOQUE A: Uso de getElementsByName para checkboxes
+    // ────────────────────────────────────────────────
+    const checkboxesP3 = document.getElementsByName("p3");
+    let q3Correctas = 0;
+    let q3Marcadas = 0;
+    for (let checkbox of checkboxesP3) {
+      if (checkbox.checked) {
+        q3Marcadas++;
+        if (checkbox.value === "correcta") q3Correctas++;
+      }
+    }
 
-    // --- BLOQUE A: LIMPIAR FEEDBACK PREVIO (Eliminación dinámica) ---
+    const q4 = parseInt(document.getElementById("p4-range").value);
+    const q5 = document.getElementById("p5-text").value.trim().toUpperCase();
+    const q6 = document.getElementById("p6-date").value;
+    const q7 = document.getElementById("p7-number").value;
+
+    // Cálculo de nota
+    if (q1 === "correcta") nota++;
+    if (q2 === "correcta") nota++;
+    if (q3Correctas === 2 && q3Marcadas === 2) nota++;
+    if (q4 === 80) nota++;
+    if (q5 === "SALTO") nota++;
+    if (q6 !== "") nota++; 
+    if (parseInt(q7) === 21) nota++;
+
+    const porcentaje = Math.round((nota / totalPreguntas) * 100);
+    const aprobado = nota >= 4;
+
+    // Mostrar resultado final
+    feedbackGlobal.style.display = "block";
+    feedbackGlobal.style.border = `2px solid ${aprobado ? "#4db8ff" : "#ff6f61"}`;
+
+    // Creamos nodos dinámicos
     while (feedbackGlobal.firstChild) {
       feedbackGlobal.removeChild(feedbackGlobal.firstChild);
     }
 
-    // --- BLOQUE A: CREAR ELEMENTOS DE RESULTADO (Creación dinámica) ---
-    const tituloInforme = document.createElement("h3");
-    const textoTitulo = document.createTextNode("INFORME DE DIAGNÓSTICO");
-    tituloInforme.appendChild(textoTitulo);
+    const h3 = document.createElement("h3");
+    h3.textContent = "INFORME DE DIAGNÓSTICO";
+    feedbackGlobal.appendChild(h3);
 
-    const pResultado = document.createElement("p");
-    const porcentaje = Math.round((nota / totalPreguntas) * 100);
-    pResultado.appendChild(
-      document.createTextNode(
-        `Estado de Sistemas: ${porcentaje}% de integridad.`,
-      ),
-    );
+    const p = document.createElement("p");
+    p.textContent = `Estado: ${porcentaje}% (${aprobado ? "APTO" : "NO APTO"})`;
+    feedbackGlobal.appendChild(p);
 
-    // Modificar atributos de estilo y clase según resultado
-    feedbackGlobal.removeAttribute("style");
-    feedbackGlobal.setAttribute("class", "resultado-visible");
-    feedbackGlobal.style.border = `2px solid ${nota >= 4 ? "#4db8ff" : "#ff6f61"}`;
-
-    // Inserción en el DOM
-    feedbackGlobal.appendChild(tituloInforme);
-    feedbackGlobal.appendChild(pResultado);
     feedbackGlobal.scrollIntoView({ behavior: "smooth" });
   });
 
-  // --- BLOQUE B: EVENTO RESET ---
+  // 6. Evento RESET del formulario
   formulario.addEventListener("reset", () => {
     feedbackGlobal.style.display = "none";
-    inputNombre.removeAttribute("style");
-    inputCodigo.style.backgroundColor = "";
-    console.log("Formulario reiniciado: Nodos restaurados.");
+    while (feedbackGlobal.firstChild) {
+      feedbackGlobal.removeChild(feedbackGlobal.firstChild);
+    }
+    inputNombre.style.border = "1px solid #ccc";
+    rangeValue.textContent = "50%";
+    console.log("Panel de control limpio.");
+  });
+
+  // PreventDefault adicional
+  formulario.addEventListener("submit", (e) => {
+    e.preventDefault();
   });
 });
